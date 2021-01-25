@@ -9,7 +9,7 @@ proc `=destroy`*(self: var IpcPipe) =
 
 proc `=copy`*(self: var IpcPipe, rhs: IpcPipe) {.error.}
 
-proc id*(self: IpcPipe): Oid = self.id
+proc id*(self: IpcPipe): Oid {.genref.} = self.id
 
 proc newOSError(ctx: string): ref OSError =
   result = newException(OSError, ctx)
