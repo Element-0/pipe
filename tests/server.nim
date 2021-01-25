@@ -1,6 +1,6 @@
 import ../ezpipe, std/oids
 
-let pipe = initIpcPipe()
+let pipe = initIpcPipeServer()
 
 echo pipe.id
 

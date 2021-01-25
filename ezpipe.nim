@@ -15,9 +15,9 @@ proc newOSError(ctx: string): ref OSError =
   result = newException(OSError, ctx)
   result.errorCode = GetLastError()
 
-proc initIpcPipe*(size: int32 = 0): IpcPipe {.genrefnew.} =
-  result.id = genOid()
-  let name = newWideCString fmt"\\.\pipe\ezipc-{result.id}"
+proc initIpcPipeServer*(id: Oid = genOid(); size: int32 = 0): IpcPipe {.genrefnew.} =
+  result.id = id
+  let name = newWideCString fmt"\\.\pipe\ezipc-{id}"
   result.handle = CreateNamedPipe(
     name,
     FILE_FLAG_FIRST_PIPE_INSTANCE or PIPE_ACCESS_DUPLEX,
@@ -26,7 +26,7 @@ proc initIpcPipe*(size: int32 = 0): IpcPipe {.genrefnew.} =
   if result.handle == INVALID_HANDLE_VALUE:
     raise newOSError("failed to create pipe")
 
-proc initIpcPipe*(id: Oid; size: int32 = 0): IpcPipe {.genrefnew.} =
+proc initIpcPipeClient*(id: Oid; size: int32 = 0): IpcPipe {.genrefnew.} =
   result.id = id
   let name = newWideCString fmt"\\.\pipe\ezipc-{id}"
   if WaitNamedPipe(name, NMPWAIT_WAIT_FOREVER) == 0:
