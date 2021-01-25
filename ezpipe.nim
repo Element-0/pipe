@@ -53,10 +53,9 @@ proc send*(self: IpcPipe, content: string) {.genref.} =
   if WriteFile(self.handle, cast[LPVOID](tmp), DWORD content.len, nil, nil) == 0:
     raise newOSError("failed to write to pipe")
 
-var buffer {.threadvar.}: array[65536, uint8]
-
 proc recv*(self: IpcPipe): string {.genref.} =
   var xlen: DWORD
+  var buffer: array[65536, uint8]
   if ReadFile(self.handle, cast[LPVOID](addr buffer), DWORD sizeof(typeof(buffer)), addr xlen, nil) == 0:
     raise newOSError("failed to read from pipe")
   result = %$buffer.toOpenArray(0, int xlen - 1)
